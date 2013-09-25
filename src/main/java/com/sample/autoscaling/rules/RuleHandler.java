@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
-import com.sample.autoscaling.async.AsyncHandler;
+import com.google.common.util.concurrent.FutureCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.scheduling.annotation.Async;
@@ -23,10 +23,10 @@ public class RuleHandler {
      * group during current job run.
      *
      * @param autoScalingGroup
-     * @param asyncHandler
+     * @param callback
      */
     @Async
-    public void applyRules(AutoScalingGroup autoScalingGroup, AsyncHandler<Boolean> asyncHandler) {
+    public void applyRules(AutoScalingGroup autoScalingGroup, FutureCallback<Boolean> callback) {
         Boolean status = false;
         try {
             for (AutoScalingGroupInstanceSelectionRule rule : instanceSelectionRules) {
@@ -38,9 +38,9 @@ public class RuleHandler {
             }
         }
         catch (Exception ex) {
-            asyncHandler.onError(ex);
+            callback.onFailure(ex);
         }
-        asyncHandler.handleResponse(status);
+        callback.onSuccess(status);
     }
 
     /**

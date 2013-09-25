@@ -9,11 +9,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = Config.class)
-public class AutoScalingSampleIT {
+public class TerminateInstanceJobIT {
 
-    @Test
-    public void testAutoScalingGroups() throws InterruptedException {
-        Thread.sleep(15000);
-    }
+
 
 }

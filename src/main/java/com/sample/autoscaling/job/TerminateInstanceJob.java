@@ -3,12 +3,14 @@ package com.sample.autoscaling.job;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import javax.annotation.Nullable;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.autoscaling.AmazonAutoScalingAsync;
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
-import com.sample.autoscaling.async.AsyncHandler;
+import com.google.common.util.concurrent.FutureCallback;
 import com.sample.autoscaling.rules.RuleHandler;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -53,23 +55,25 @@ public class TerminateInstanceJob {
 
             for (final AutoScalingGroup autoScalingGroup : allAutoScalingGroups) {
                 //Each Auto Scaling Group will be handled asynchronously.
-                ruleHandler.applyRules(autoScalingGroup, new AsyncHandler<Boolean>() {
+                ruleHandler.applyRules(autoScalingGroup, new FutureCallback<Boolean>() {
 
                     @Override
-                    public void handleResponse(Boolean res) {
+                    public void onSuccess(
+                        @Nullable
+                        Boolean result) {
                         LOGGER.debug("Flag to terminate instance on com.sample.autoscaling group {} is {}",
-                            autoScalingGroup.getAutoScalingGroupName(), res);
+                            autoScalingGroup.getAutoScalingGroupName(), result);
                         //If all the rules passes, terminate an instance in auto-scaling group
-                        if (res) {
+                        if (result) {
                             terminateInstance(autoScalingGroup);
                         }
                         countDownLatch.countDown();
                     }
 
                     @Override
-                    public void onError(Exception exception) {
+                    public void onFailure(Throwable t) {
                         LOGGER.error("An exception was thrown while running rules on auto scaling group {}: {}",
-                            autoScalingGroup.getAutoScalingGroupName(), exception);
+                            autoScalingGroup.getAutoScalingGroupName(), t);
                         countDownLatch.countDown();
                     }
                 });
