@@ -105,7 +105,7 @@ public class TerminateInstanceJob {
      *
      * @return List of auto scaling groups.
      */
-    private List<AutoScalingGroup> getAllAutoScalingGroups() {
+    public List<AutoScalingGroup> getAllAutoScalingGroups() {
         DescribeAutoScalingGroupsResult autoScalingGroupsResult = null;
         try {
             //This is a blocking call because this is base to start doing work asynchronously beyond this point .
