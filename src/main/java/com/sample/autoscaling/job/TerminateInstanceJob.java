@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 /**
- * Terminate Instance job, run() method of this class is scheduled to be called at regular intervals. This job will
- * retrieve all the auto scaling groups in account and apply rules defined to decide if an instance can be terminated in
- * the auto scaling group or not. If instance can be terminated in an auto scaling group, this job will terminate the
- * instance as well.
+ * This class represents Terminate Instance job, run() method of this class is scheduled to be called at regular
+ * intervals. This job will retrieve all the auto scaling groups in account and apply defined rules to decide if an
+ * instance can be terminated in the auto scaling group or not. If instance can be terminated in an auto scaling group,
+ * this job will terminate the instance as well.
  */
 @Component
 public class TerminateInstanceJob {

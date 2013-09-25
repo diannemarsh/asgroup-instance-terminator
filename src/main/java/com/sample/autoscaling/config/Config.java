@@ -23,7 +23,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 @Configuration
-@ComponentScan("com.sample.com.sample.autoscaling")
+@ComponentScan("com.sample.autoscaling")
 @PropertySource("classpath:sample-application.properties")
 @EnableScheduling
 @EnableAsync
