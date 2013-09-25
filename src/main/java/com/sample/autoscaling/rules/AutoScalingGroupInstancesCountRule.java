@@ -22,7 +22,7 @@ public class AutoScalingGroupInstancesCountRule implements AutoScalingGroupInsta
 
     @Override
     public boolean apply(AutoScalingGroup autoScalingGroup) {
-        LOGGER.info("Number of instances in auto-scaling group {} are: {}", autoScalingGroup.getAutoScalingGroupName(),
+        LOGGER.debug("Number of instances in auto-scaling group {} are: {}", autoScalingGroup.getAutoScalingGroupName(),
             autoScalingGroup.getInstances().size());
         return autoScalingGroup.getInstances().size() > minThresholdForInstanceTermination;
     }

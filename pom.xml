@@ -13,6 +13,7 @@
       <spring.version>3.2.4.RELEASE</spring.version>
       <slf4j.version>1.7.5</slf4j.version>
       <logback.version>1.0.13</logback.version>
+      <joda-time.version>2.3</joda-time.version>
    </properties>
 
    <dependencies>
@@ -56,6 +57,11 @@
          <artifactId>spring-test</artifactId>
          <version>${spring.version}</version>
          <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+         <version>${joda-time.version}</version>
       </dependency>
       <dependency>
          <groupId>junit</groupId>
