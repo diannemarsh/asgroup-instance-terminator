@@ -94,9 +94,6 @@ public class TerminateInstanceJob {
     private void terminateInstance(AutoScalingGroup autoScalingGroup) {
         LOGGER.info("All rules passed for auto scaling group {}, terminating an instance in the group",
             autoScalingGroup.getAutoScalingGroupName());
-        /*TerminateInstanceInAutoScalingGroupRequest terminateInstanceRequest = new
-            TerminateInstanceInAutoScalingGroupRequest();
-        autoScalingClient.terminateInstanceInAutoScalingGroup(terminateInstanceRequest);*/
     }
 
     /**
