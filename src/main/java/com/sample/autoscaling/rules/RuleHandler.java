@@ -48,7 +48,7 @@ public class RuleHandler {
      * annotation.
      */
     @PostConstruct
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         AnnotationAwareOrderComparator.sort(instanceSelectionRules);
     }
 }
