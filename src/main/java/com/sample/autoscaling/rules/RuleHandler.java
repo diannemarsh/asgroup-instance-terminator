@@ -26,7 +26,7 @@ public class RuleHandler {
      * @param callback
      */
     @Async
-    public final void applyRules(AutoScalingGroup autoScalingGroup, FutureCallback<Boolean> callback) {
+    public void applyRules(AutoScalingGroup autoScalingGroup, FutureCallback<Boolean> callback) {
         Boolean status = false;
         try {
             for (AutoScalingGroupInstanceSelectionRule rule : instanceSelectionRules) {
@@ -48,7 +48,7 @@ public class RuleHandler {
      * annotation.
      */
     @PostConstruct
-    public final void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         AnnotationAwareOrderComparator.sort(instanceSelectionRules);
     }
 }
