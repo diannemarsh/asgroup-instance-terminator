@@ -15,6 +15,6 @@ public interface AutoScalingGroupInstanceSelectionRule {
      *
      * @return false if any rule fails, otherwise true.
      */
-    public boolean apply(AutoScalingGroup autoScalingGroup);
+    boolean apply(AutoScalingGroup autoScalingGroup);
 
 }

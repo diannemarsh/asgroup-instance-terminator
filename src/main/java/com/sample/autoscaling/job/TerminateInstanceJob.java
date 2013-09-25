@@ -41,13 +41,11 @@ public class TerminateInstanceJob {
      * This method will be called as per the timing configured by cron expression and will initiate the complete job.
      */
     @Scheduled(cron = "${cron.job.schedule}")
-    public void run() throws InterruptedException {
+    public final void run() throws InterruptedException {
         LOGGER.info("Starting Instance Termination job at {}", DateTime.now());
 
         List<AutoScalingGroup> allAutoScalingGroups = getAllAutoScalingGroups();
-
-        // If Auto Scaling groups are retrieved, run the instance termination rules against auto scaling group in
-        // parallel.
+        // If Auto Scaling groups are retrieved, run the instance termination rules against auto scaling groups
         if (!CollectionUtils.isEmpty(allAutoScalingGroups)) {
 
             //Create a count down latch to block the scheduler thread
@@ -56,7 +54,6 @@ public class TerminateInstanceJob {
             for (final AutoScalingGroup autoScalingGroup : allAutoScalingGroups) {
                 //Each Auto Scaling Group will be handled asynchronously.
                 ruleHandler.applyRules(autoScalingGroup, new FutureCallback<Boolean>() {
-
                     @Override
                     public void onSuccess(
                         @Nullable
@@ -69,7 +66,6 @@ public class TerminateInstanceJob {
                         }
                         countDownLatch.countDown();
                     }
-
                     @Override
                     public void onFailure(Throwable t) {
                         LOGGER.error("An exception was thrown while running rules on auto scaling group {}: {}",
@@ -78,7 +74,6 @@ public class TerminateInstanceJob {
                     }
                 });
             }
-
             // Wait for all the auto scaling groups to be processed. All of the auto scaling groups will be processed
             // asynchronously
             countDownLatch.await();

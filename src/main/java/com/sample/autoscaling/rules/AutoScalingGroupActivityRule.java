@@ -33,7 +33,7 @@ public class AutoScalingGroupActivityRule implements AutoScalingGroupInstanceSel
     private AmazonAutoScalingAsync autoScalingClient;
 
     @Override
-    public boolean apply(AutoScalingGroup autoScalingGroup) {
+    public final boolean apply(AutoScalingGroup autoScalingGroup) {
         //Build a request to describe auto scaling group activities.
         DescribeScalingActivitiesRequest scalingActivitiesRequest =
             new DescribeScalingActivitiesRequest().withAutoScalingGroupName(autoScalingGroup.getAutoScalingGroupName())

@@ -50,7 +50,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
     }
 
     @Bean
-    public AWSCredentialsProvider awsCredentialsProvider() {
+    public final AWSCredentialsProvider awsCredentialsProvider() {
         return new ClasspathPropertiesFileCredentialsProvider();
     }
 
@@ -59,7 +59,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
      * so that we have complete control over the thread pool configuration and it can be tuned.
      */
     @Bean
-    public AmazonAutoScalingAsync autoScalingAsyncClient() {
+    public final AmazonAutoScalingAsync autoScalingAsyncClient() {
         return new AmazonAutoScalingAsyncClient(awsCredentialsProvider());
     }
 
@@ -68,7 +68,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
      * running on weekdays to kill AWS instances when all the conditions are satisfied.
      */
     @Bean(destroyMethod = "shutdown")
-    public TaskScheduler getTaskScheduler() {
+    public final TaskScheduler getTaskScheduler() {
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
         taskScheduler.setPoolSize(schedulerPoolSize);
         taskScheduler.setThreadGroupName("Core Scheduler Thread Pool");
@@ -80,7 +80,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
      * Set Task Scheduler for Scheduling jobs
      */
     @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+    public final void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setTaskScheduler(getTaskScheduler());
     }
 
@@ -89,7 +89,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
      */
     @Override
     @Bean
-    public Executor getAsyncExecutor() {
+    public final Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(executorPoolSize);
         executor.setMaxPoolSize(executorMaxPoolSize);
