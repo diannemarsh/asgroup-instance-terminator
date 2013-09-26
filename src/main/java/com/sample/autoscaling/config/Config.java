@@ -13,6 +13,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -43,6 +47,15 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
 
     @Value("${executor.queue.capacity}")
     private int executorQueueCapacity;
+
+    @Value("${redis.host}")
+    private String redisHost;
+
+    @Value("${redis.password}")
+    private String redisPassword;
+
+    @Value("${redis.port}")
+    private int redisPort;
 
     /**
      * Bean to configure property placeholder.
@@ -99,5 +112,28 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
         executor.setThreadGroupName("Core Executor Thread Pool");
         executor.setThreadNamePrefix("Executor-");
         return executor;
+    }
+
+    /**
+     * Redis Connection Factory Bean
+     */
+    @Bean(destroyMethod = "destroy")
+    public RedisConnectionFactory redisConnectionFactory() {
+        JedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory();
+        redisConnectionFactory.setHostName(redisHost);
+        redisConnectionFactory.setPassword(redisPassword);
+        redisConnectionFactory.setPort(redisPort);
+        return redisConnectionFactory;
+    }
+
+    /**
+     * RedisTemplate that provides a high level abstraction for performing various Redis operations. It can be injected
+     * like @Autowired private RedisTemplate<String, String> template; or can also be injected as ListOperations,
+     * ValueOperations, SetOperations, ZSetOperations, and HashOperations (Property Editors are used to inject template
+     * as Operations)
+     */
+    @Bean
+    public RedisTemplate redisTemplate() {
+        return new StringRedisTemplate(redisConnectionFactory());
     }
 }
