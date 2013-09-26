@@ -14,15 +14,11 @@ If any of the above condition fails for an auto scaling group, Job will skip the
 How to run
 ===========================
 
-Step 1: Clone this repository
-Step 2: Configure AWS Credentials
-Open asgroup-instance-terminator/src/main/resources/AwsCredentials.properties and provide your aws account details
-Step 3: For Unit tests to be successful
-Open asgroup-instance-terminator/src/test/resources/sample-application-test.properties and provide a test auto
-scaling group name present in your account.
-Step 4: mvn clean install
-Step 5: Run the application java -jar asgroup-instance-terminator-1.0.0-SNAPSHOT.jar 
-(Logs will be generated in a file called app.log in the same directory from where you run the job)
+1. Clone this repository
+2. Configure AWS Credentials (Open asgroup-instance-terminator/src/main/resources/AwsCredentials.properties and provide your aws account details)
+3. For Unit tests to be successful (Open asgroup-instance-terminator/src/test/resources/sample-application-test.properties and provide a test auto scaling group name present in your account.)
+4. mvn clean install
+5. Run the application java -jar asgroup-instance-terminator-1.0.0-SNAPSHOT.jar (Logs will be generated in a file called app.log in the same directory from where you run the job)
 
 What can be configured
 ===========================
