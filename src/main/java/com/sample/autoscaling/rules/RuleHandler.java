@@ -78,6 +78,7 @@ public class RuleHandler {
      * @param autoScalingGroup
      */
     private void terminateInstance(Long jobSequenceNumber, AutoScalingGroup autoScalingGroup) {
+        //Just Logging it, not killing any instance by purpose.
         LOGGER.info("All rules passed for auto scaling group {}, terminating an instance in the group",
             autoScalingGroup.getAutoScalingGroupName());
         hashOps.put(autoScalingGroup.getAutoScalingGroupName(), jobSequenceNumber, "Terminated Instance:X");
