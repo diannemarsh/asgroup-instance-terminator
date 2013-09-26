@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
  * is any scale up activity in last n minutes or is in progress, auto scaling group will be by-passed in this run.
  */
 @Order(2)
+@RuleDescription("Recent Scale up activity check in auto scaling group")
 @Component
 public class AutoScalingGroupActivityRule implements AutoScalingGroupInstanceSelectionRule {
 

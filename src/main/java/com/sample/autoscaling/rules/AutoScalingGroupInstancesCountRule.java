@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
  * only instance in an auto scaling group.
  */
 @Order(1)
+@RuleDescription("Minimum Instances check in auto scaling group")
 @Component
 public class AutoScalingGroupInstancesCountRule implements AutoScalingGroupInstanceSelectionRule {
 

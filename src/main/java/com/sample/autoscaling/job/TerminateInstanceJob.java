@@ -61,8 +61,6 @@ public class TerminateInstanceJob {
                     public void onSuccess(
                         @Nullable
                         Boolean result) {
-                        LOGGER.debug("Flag to terminate instance on com.sample.autoscaling group {} is {}",
-                            autoScalingGroup.getAutoScalingGroupName(), result);
                         //If all the rules passes, terminate an instance in auto-scaling group
                         if (result) {
                             terminateInstance(autoScalingGroup);

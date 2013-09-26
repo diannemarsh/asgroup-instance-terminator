@@ -88,7 +88,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
      * Set Async Executor for all the methods annotated with @Async annotation.
      */
     @Override
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(executorPoolSize);
