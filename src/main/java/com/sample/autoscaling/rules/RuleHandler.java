@@ -45,11 +45,11 @@ public class RuleHandler {
                     break;
                 }
             }
+            callback.onSuccess(status);
         }
         catch (Exception ex) {
             callback.onFailure(ex);
         }
-        callback.onSuccess(status);
     }
 
     /**

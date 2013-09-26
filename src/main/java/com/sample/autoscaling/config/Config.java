@@ -22,6 +22,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+/**
+ * Spring Context Configuration file
+ */
 @Configuration
 @ComponentScan("com.sample.autoscaling")
 @PropertySource("classpath:sample-application.properties")
@@ -55,8 +58,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
     }
 
     /**
-     * Client Bean to interact with AutoScaling API (Async Version). We are using out own thread pool for async client
-     * so that we have complete control over the thread pool configuration and it can be tuned.
+     * Client Bean to interact with AutoScaling API (Async Version).
      */
     @Bean
     public AmazonAutoScalingAsync autoScalingAsyncClient() {
@@ -64,8 +66,7 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
     }
 
     /**
-     * Task Scheduler thread pool to schedule tasks which will be running in background. One example is that task
-     * running on weekdays to kill AWS instances when all the conditions are satisfied.
+     * Task Scheduler thread pool to schedule tasks which will be running in background.
      */
     @Bean(destroyMethod = "shutdown")
     public TaskScheduler getTaskScheduler() {

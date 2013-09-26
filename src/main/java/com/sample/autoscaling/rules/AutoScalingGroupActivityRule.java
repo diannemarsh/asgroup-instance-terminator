@@ -35,19 +35,8 @@ public class AutoScalingGroupActivityRule implements AutoScalingGroupInstanceSel
 
     @Override
     public boolean apply(AutoScalingGroup autoScalingGroup) {
-        //Build a request to describe auto scaling group activities.
-        DescribeScalingActivitiesRequest scalingActivitiesRequest =
-            new DescribeScalingActivitiesRequest().withAutoScalingGroupName(autoScalingGroup.getAutoScalingGroupName())
-                .withMaxRecords(1);//Latest Activity Only
 
-        // Get the auto scaling group activities. Only activities from the past six weeks are returned. Activities
-        // still in progress appear first on the list.
-        DescribeScalingActivitiesResult scalingActivitiesResult =
-            autoScalingClient.describeScalingActivities(scalingActivitiesRequest);
-        List<Activity> scalingActivities = scalingActivitiesResult.getActivities();
-        LOGGER.debug("Scaling Activities of Auto-Scaling group {} are {}", autoScalingGroup.getAutoScalingGroupName(),
-            scalingActivities);
-
+        List<Activity> scalingActivities = getScalingActivities(autoScalingGroup);
         //If there is no activity in last six week, instance of this auto scaling group can be terminated.
         boolean status = scalingActivities.size() == 0;
         // If there is scaling activity
@@ -57,8 +46,29 @@ public class AutoScalingGroupActivityRule implements AutoScalingGroupInstanceSel
             status = !(isScaleUpActivityInProgress(latestScalingActivity) ||
                 isScaleUpActivityCompletedRecently(latestScalingActivity));
         }
-
         return status;
+    }
+
+    /**
+     * This method will retrieve the auto scaling activities for an auto scaling group.
+     *
+     * @param autoScalingGroup
+     *
+     * @return
+     */
+    private List<Activity> getScalingActivities(AutoScalingGroup autoScalingGroup) {
+        //Build a request to describe auto scaling group activities.
+        DescribeScalingActivitiesRequest scalingActivitiesRequest =
+            new DescribeScalingActivitiesRequest().withAutoScalingGroupName(autoScalingGroup.getAutoScalingGroupName())
+                .withMaxRecords(1);//Latest Activity Only
+        // Get the auto scaling group activities. Only activities from the past six weeks are returned. Activities
+        // still in progress appear first on the list.
+        DescribeScalingActivitiesResult scalingActivitiesResult =
+            autoScalingClient.describeScalingActivities(scalingActivitiesRequest);
+        List<Activity> scalingActivities = scalingActivitiesResult.getActivities();
+        LOGGER.debug("Scaling Activities of Auto-Scaling group {} are {}", autoScalingGroup.getAutoScalingGroupName(),
+            scalingActivities);
+        return scalingActivities;
     }
 
     /**
