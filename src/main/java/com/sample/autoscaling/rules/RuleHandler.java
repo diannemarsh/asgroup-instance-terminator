@@ -39,7 +39,8 @@ public class RuleHandler {
                 if (!status) {
                     RuleDescription ruleDescription =
                         AnnotationUtils.findAnnotation(rule.getClass(), RuleDescription.class);
-                    LOGGER.info("Rule - {} failed", ruleDescription.value());
+                    LOGGER.info("Rule - {} {} failed", ruleDescription.value(),
+                        autoScalingGroup.getAutoScalingGroupName());
                     //If one rule fails, there is no need to process further.
                     break;
                 }
