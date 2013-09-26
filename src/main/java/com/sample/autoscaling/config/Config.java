@@ -15,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.TaskScheduler;
@@ -135,5 +136,15 @@ public class Config implements AsyncConfigurer, SchedulingConfigurer {
     @Bean
     public RedisTemplate redisTemplate() {
         return new StringRedisTemplate(redisConnectionFactory());
+    }
+
+    /**
+     * Bean that will only interact with key terminate_instance_job_sequence in Redis to generate job sequence number.
+     */
+    @Bean
+    public BoundValueOperations<String, Long> jobSequenceValueOps(
+        @Value("${redis.job.sequence.key}")
+        String jobSequenceKey) {
+        return redisTemplate().boundValueOps(jobSequenceKey);
     }
 }

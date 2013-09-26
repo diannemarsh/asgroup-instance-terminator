@@ -3,19 +3,17 @@ package com.sample.autoscaling.job;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import javax.annotation.Nullable;
-
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.autoscaling.AmazonAutoScalingAsync;
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
-import com.google.common.util.concurrent.FutureCallback;
 import com.sample.autoscaling.rules.RuleHandler;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -38,11 +36,18 @@ public class TerminateInstanceJob {
     private RuleHandler ruleHandler;
 
     /**
+     * Used to retrieve the sequence number.
+     */
+    @Autowired
+    private BoundValueOperations<String, Long> jobSequenceValueOps;
+
+    /**
      * This method will be called as per the timing configured by cron expression and will initiate the complete job.
      */
     @Scheduled(cron = "${cron.job.schedule}")
     public void run() throws InterruptedException {
-        LOGGER.info("Starting Instance Termination job at {}", DateTime.now());
+        Long jobSequenceNumber = jobSequenceValueOps.increment(1);
+        LOGGER.info("Starting Instance Termination #{} job at {}", jobSequenceNumber, DateTime.now());
 
         List<AutoScalingGroup> allAutoScalingGroups = getAllAutoScalingGroups();
 
@@ -55,48 +60,16 @@ public class TerminateInstanceJob {
 
             for (final AutoScalingGroup autoScalingGroup : allAutoScalingGroups) {
                 //Each Auto Scaling Group will be handled asynchronously.
-                ruleHandler.applyRules(autoScalingGroup, new FutureCallback<Boolean>() {
-
-                    @Override
-                    public void onSuccess(
-                        @Nullable
-                        Boolean result) {
-                        //If all the rules passes, terminate an instance in auto-scaling group
-                        if (result) {
-                            terminateInstance(autoScalingGroup);
-                        }
-                        countDownLatch.countDown();
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        LOGGER.error("An exception was thrown while running rules on auto scaling group {}: {}",
-                            autoScalingGroup.getAutoScalingGroupName(), t);
-                        countDownLatch.countDown();
-                    }
-                });
+                ruleHandler.applyRules(jobSequenceNumber, autoScalingGroup, countDownLatch);
             }
-
             // Wait for all the auto scaling groups to be processed. All of the auto scaling groups will be processed
             // asynchronously
             countDownLatch.await();
         }
 
-        LOGGER.info("Finished Instance Termination job at {}", DateTime.now());
+        LOGGER.info("Finished Instance Termination job # {} at {}", jobSequenceNumber, DateTime.now());
     }
 
-
-    /**
-     * This method will terminate the instance in auto scaling group. It will not try to apply any rules to pick the
-     * instance. It will completely depend on rules applied by auto scaling termination process. This method will also
-     * be executed in callback thread, not the scheduler thread.
-     *
-     * @param autoScalingGroup
-     */
-    private void terminateInstance(AutoScalingGroup autoScalingGroup) {
-        LOGGER.info("All rules passed for auto scaling group {}, terminating an instance in the group",
-            autoScalingGroup.getAutoScalingGroupName());
-    }
 
     /**
      * Method to retrieve all the auto scaling groups of account.
