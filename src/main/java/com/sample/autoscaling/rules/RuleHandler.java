@@ -24,6 +24,9 @@ public class RuleHandler {
     @Autowired
     private List<AutoScalingGroupInstanceSelectionRule> instanceSelectionRules;
 
+    /**
+     * @Resource is required because of Property Editors magic, see ListOperationsEditor
+     */
     @Resource(name = "redisTemplate")
     private HashOperations<String, Long, String> hashOps;
 
